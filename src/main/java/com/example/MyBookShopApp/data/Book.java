@@ -1,29 +1,25 @@
-package com.example.MyBookShopApp.struct.book;
+package com.example.MyBookShopApp.data;
 
-
-import com.example.MyBookShopApp.struct.Author;
-
-import javax.persistence.*;
-
-@Entity
-@Table(name = "books")
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
-    private Author author;
+    private String author;
     private String title;
     private String priceOld;
     private String price;
-
-    @Transient
     private Boolean isSale;
-    @Transient
     private Integer discount;
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", priceOld='" + priceOld + '\'' +
+                ", price='" + price + '\'' +
+                '}';
+    }
 
     public Integer getId() {
         return id;
@@ -33,11 +29,11 @@ public class Book {
         this.id = id;
     }
 
-    public Author getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(Author author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
@@ -79,18 +75,5 @@ public class Book {
 
     public void setDiscount(Integer discount) {
         this.discount = discount;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", author=" + author +
-                ", title='" + title + '\'' +
-                ", priceOld='" + priceOld + '\'' +
-                ", price='" + price + '\'' +
-                ", isSale=" + isSale +
-                ", discount=" + discount +
-                '}';
     }
 }
