@@ -12,9 +12,10 @@
                     </div>
                     <div class="Header-search">
                         <div class="search">
-                            <form class="form form_search" action="#" method="post" data-searchlimit="20">
+                            <form class="form form_search" action="#" method="post" data-searchlimit="20"
+                                  th:object="${searchWordDto}">
                                 <input class="search-input" id="query" name="query" type="text" placeholder="Search over 30 million book titles"
-                                       th:placeholder="#{topbar.placeholder}" value=""/>
+                                       th:placeholder="#{topbar.placeholder}" th:field="*{example}" value=""/>
                                 <button class="search-button" type="submit" name="search" id="search"
                                     th:text="#{topbar.search}">Поиск
                                 </button>
@@ -52,11 +53,11 @@
                             th:text="#{topbar.genres}">Жанры</a>
                     </li>
                     <li class="menu-item" th:classappend="${page=='recent'} ? 'menu-item_ACTIVE'">
-                        <a class="menu-link" href="/books/recent.html" th:href="@{/books/recent}"
+                        <a class="menu-link" href="/books/recent.html" th:href="@{/recent}"
                             th:text="#{topbar.recent}">Новинки</a>
                     </li>
                     <li class="menu-item" th:classappend="${page=='popular'} ? 'menu-item_ACTIVE'">
-                        <a class="menu-link" href="/books/popular.html" th:href="@{/books/popular}"
+                        <a class="menu-link" href="/books/popular.html" th:href="@{/popular}"
                             th:text="#{topbar.popular}">Популярное</a>
                     </li>
                     <li class="menu-item" th:classappend="${page=='authors'} ? 'menu-item_ACTIVE'">

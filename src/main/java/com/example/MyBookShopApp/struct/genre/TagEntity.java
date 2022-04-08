@@ -1,21 +1,19 @@
 package com.example.MyBookShopApp.struct.genre;
 
-import com.example.MyBookShopApp.struct.book.links.Book2GenreEntity;
+
+import com.example.MyBookShopApp.struct.book.links.Book2TagEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "genre")
-public class GenreEntity {
+@Table(name = "tag")
+public class TagEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(columnDefinition = "INT", name = "parent_id")
-    private int parentId;
 
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String slug;
@@ -23,9 +21,9 @@ public class GenreEntity {
     @Column(columnDefinition = "VARCHAR(255) NOT NULL")
     private String name;
 
-    @OneToMany(mappedBy = "genreEntity")
+    @OneToMany(mappedBy = "tagEntity")
     @JsonIgnore
-    private List<Book2GenreEntity> bookToGenreList;
+    private List<Book2TagEntity> bookToTagList;
 
     public int getId() {
         return id;
@@ -33,14 +31,6 @@ public class GenreEntity {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
     }
 
     public String getSlug() {
@@ -59,11 +49,20 @@ public class GenreEntity {
         this.name = name;
     }
 
-    public List<Book2GenreEntity> getBookToGenreList() {
-        return bookToGenreList;
+    public List<Book2TagEntity> getBookToTagList() {
+        return bookToTagList;
     }
 
-    public void setBookToGenreList(List<Book2GenreEntity> bookToGenreList) {
-        this.bookToGenreList = bookToGenreList;
+    public void setBookToTagList(List<Book2TagEntity> bookToTagList) {
+        this.bookToTagList = bookToTagList;
+    }
+
+    //TODO stidoba
+    public String getTagClass() {
+        int size = this.bookToTagList.size();
+        if (size > 40) return "Tag_lg";
+        else if (size>20) return "Tag_md";
+        else if (size>10) return "Tag_sm";
+        else return "Tag_xs";
     }
 }

@@ -1,5 +1,10 @@
 package com.example.MyBookShopApp.struct.book.links;
 
+import com.example.MyBookShopApp.struct.book.Book;
+import com.example.MyBookShopApp.struct.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -14,14 +19,21 @@ public class Book2UserEntity {
     @Column(columnDefinition = "DATE NOT NULL")
     private LocalDateTime time;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int typeId;
+    @ManyToOne
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    private Book2UserTypeEntity book2UserTypeEntity;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int bookId;
+    @ManyToOne()
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    @JsonProperty("book")
+    @JsonIgnore
+    private Book book;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int userId;
+    @ManyToOne()
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonProperty("user")
+    @JsonIgnore
+    private UserEntity user;
 
     public int getId() {
         return id;
@@ -39,27 +51,27 @@ public class Book2UserEntity {
         this.time = time;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public Book2UserTypeEntity getBook2UserTypeEntity() {
+        return book2UserTypeEntity;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setBook2UserTypeEntity(Book2UserTypeEntity book2UserTypeEntity) {
+        this.book2UserTypeEntity = book2UserTypeEntity;
     }
 
-    public int getBookId() {
-        return bookId;
+    public Book getBook() {
+        return book;
     }
 
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
-    public int getUserId() {
-        return userId;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }
