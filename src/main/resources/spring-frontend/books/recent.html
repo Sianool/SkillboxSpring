@@ -77,9 +77,9 @@
           <div class="Cards Cards_refresh">
             <div class="Card" th:each="book : ${recentBooks}">
               <div class="Card-picture"><a href="#" th:href="${'/book/' + book.getSlug()}"><img
-                      src="/assets/img/content/main/card.jpg" th:src="${book.getImage()}" alt="card.jpg"/></a>
+                      src="/assets/img/content/main/card.jpg" th:src="${book.getImage()}" alt="card.jpg"/>
                 <div class='Card-sale' th:text=" ${book.getPercentDiscount()} + '% скидка'"></div>
-                <div class="Card-ribbon" th:if="${book.isBestseller}"><span class="Card-ribbonText">Бестселлер</span></div>
+                <div class="Card-ribbon" th:if="${book.isBestseller}"><span class="Card-ribbonText">Бестселлер</span></div></a>
                <!-- <a class="Card-status" title="Куплена"><img src="/assets/img/icons/check.svg" alt="check.svg"/></a>
                 <a class="Card-status" title="В корзине"><img src="/assets/img/icons/shopping-basket.svg" alt="shopping-basket.svg"/></a>
                 <a class="Card-status" title="Отложена"><img src="/assets/img/icons/heart.svg" alt="heart.svg"/></a>-->

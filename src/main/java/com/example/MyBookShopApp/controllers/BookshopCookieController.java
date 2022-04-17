@@ -91,7 +91,7 @@ public class BookshopCookieController extends SearchController{
             handleRemoveFromCartRequest(slug, cartContents, response, model);
             setCookie(slug, postponedContents, "Postponed", response, model);
         }
-        return "redirect:/books/" + slug;
+        return "redirect:/book/" + slug;
     }
 
 
