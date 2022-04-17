@@ -20,6 +20,10 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
 
     Page<Book> findBooksById(Integer id, Pageable pageable);
 
+    List<Book> findBooksBySlugIn(String[] slugs);
+
+    Book findBookBySlug(String slug);
+
     @Query("FROM Book ORDER BY pubDate DESC, title DESC")
     List<Book> findAllOrderByPubDate();
 
@@ -31,7 +35,7 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
 
     List<Book> findBooksByPriceOldIs(Integer price);
 
-    @Query("from Book where isBestSeller=1")
+    @Query("from Book where isBestseller=1")
     List<Book> getBestSellers();
 
     @Query(value = "SELECT * FROM books WHERE discount=(SELECT MAX(discount) from books)", nativeQuery = true)
@@ -48,5 +52,7 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
     Page<Book> findAllBooksByTagsSlug(String slug, Pageable nextPage);
 
     Page<Book> findAllByOrderByBookPopularityDesc(Pageable nexPage);
+
+    Page<Book> findAllByOrderByBookRatingDesc(Pageable nexPage);
 
 }

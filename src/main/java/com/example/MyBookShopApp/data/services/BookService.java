@@ -2,6 +2,7 @@ package com.example.MyBookShopApp.data.services;
 
 
 import com.example.MyBookShopApp.data.repository.BookRepository;
+import com.example.MyBookShopApp.errs.BookstoreApiWrongParameterException;
 import com.example.MyBookShopApp.struct.book.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,10 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -39,8 +37,17 @@ public class BookService {
         return bookRepository.findBooksByAuthorId(id);
     }
 
-    public List<Book> getBooksByTitle(String title) {
-        return bookRepository.findBooksByTitleContaining(title);
+    public List<Book> getBooksByTitle(String title) throws BookstoreApiWrongParameterException {
+        if (title.length() <= 1) {
+            throw new BookstoreApiWrongParameterException("Wrong value passed to one or more parameters");
+        } else {
+            List<Book> data = bookRepository.findBooksByTitleContaining(title);
+            if (data.size() > 0) {
+                return data;
+            } else {
+                throw new BookstoreApiWrongParameterException("No data found with specified parameters");
+            }
+        }
     }
 
     public List<Book> getBooksByGenre(Integer id) {
@@ -65,7 +72,7 @@ public class BookService {
 
     public Page<Book> getPageOfRecommendedBooks(Integer offset, Integer limit) {
         Pageable nextPage = PageRequest.of(offset, limit);
-        return bookRepository.findAll(nextPage);
+        return bookRepository.findAllByOrderByBookRatingDesc(nextPage);
     }
 
     public Page<Book> getPageOfPopularBooks(Integer offset, Integer limit) {

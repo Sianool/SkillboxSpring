@@ -1021,3 +1021,15 @@ insert into books (id, pub_date, is_bestseller, slug, title, image, description,
 insert into books (id, pub_date, is_bestseller, slug, title, image, description, price, discount, author_id) values (998, '2013/08/14', 1, 'book-wok-788', 'Secret of NIMH, The', 'http://dummyimage.com/389x769.png/5fa2dd/ffffff', 'Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices.', 1190, 0.42, 19);
 insert into books (id, pub_date, is_bestseller, slug, title, image, description, price, discount, author_id) values (999, '2010/05/26', 0, 'book-wbc-998', 'Stand Up and Cheer!', 'http://dummyimage.com/377x586.png/cc0000/ffffff', 'In hac habitasse platea dictumst. Morbi vestibulum, velit id pretium iaculis, diam erat fermentum justo, nec condimentum neque sapien placerat ante. Nulla justo. Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros.', 422, 0.14, 12);
 insert into books (id, pub_date, is_bestseller, slug, title, image, description, price, discount, author_id) values (1000, '2017/08/13', 0, 'book-iyd-142', 'Batman Returns', 'http://dummyimage.com/747x528.png/dddddd/000000', 'Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.', 2413, 0.14, 10);
+
+insert into book_file_type (id, name, description) values (1, '.pdf', 'ПДФ');
+insert into book_file_type (id, name, description) values (2, '.epub', 'ЕПАБ');
+insert into book_file_type (id, name, description) values (3, '.fb2', 'ФБ2');
+
+insert into book_file (id, hash, type_id, path, book_id) values (1, 'fsdfj5alsd546ytre', 1, '/Emperors_New_Clothes_The.pdf', 683);
+insert into book_file (id, hash, type_id, path, book_id) values (2, 'fsdfj5al34gdsfg55', 2, '/Emperors_New_Clothes_The.epub', 683);
+insert into book_file (id, hash, type_id, path, book_id) values (3, 'fsdfj5alergbddewr', 3, '/Emperors_New_Clothes_The.fb2', 683);
+
+
+
+

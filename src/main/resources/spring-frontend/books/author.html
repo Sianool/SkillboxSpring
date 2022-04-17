@@ -56,9 +56,13 @@
         <div class="Section">
           <div class="Cards Cards_refresh">
             <div class="Card" th:each="book : ${bookList}">
-              <div class="Card-picture"><a href="#"><img src="/assets/img/content/main/card.jpg"
-                                                         th:src="${book.image}"
-                                                         alt="card.jpg"/></a>
+              <div class="Card-picture"><a class="Card-picture" th:href="${'/book/' + book.getSlug()}" href="/books/slug.html"><img
+                      src="/assets/img/content/main/card.jpg"
+                      th:src="${book.getImage()}"
+                      alt="card.jpg"/>
+                <div th:class="Card-sale" th:text="${book.getPercentDiscount()}+ '% скидка'"></div>
+                <div class="Card-ribbon" th:if="${book.isBestseller}"><span class="Card-ribbonText">Бестселлер</span></div>
+              </a>
               </div>
               <div class="Card-content">
                 <strong class="Card-title"><a href="#" th:text="${book.getTitle()}">Техника</a>

@@ -4,6 +4,7 @@ package com.example.MyBookShopApp.controllers;
 import com.example.MyBookShopApp.data.dto.SearchWordDto;
 import com.example.MyBookShopApp.data.dto.BooksPageDto;
 import com.example.MyBookShopApp.data.services.TagService;
+import com.example.MyBookShopApp.errs.EmptySearchException;
 import com.example.MyBookShopApp.struct.book.Book;
 import com.example.MyBookShopApp.data.services.BookService;
 import com.example.MyBookShopApp.struct.genre.TagEntity;
@@ -81,12 +82,17 @@ public class MainPageController extends SearchController{
 
     @GetMapping(value = {"/search", "/search/{searchWord}"})
     public String getSearchResults(@PathVariable(value = "searchWord", required = false)
-                                           SearchWordDto searchWordDto, Model model) {
-        Page<Book> pageOfSearchResultBooks = bookService.getPageOfSearchResultBooks(searchWordDto.getExample(), 0, 10);
-        model.addAttribute("searchWordDto", searchWordDto);
-        model.addAttribute("searchResultSize", pageOfSearchResultBooks.getTotalElements());
-        model.addAttribute("searchResults", pageOfSearchResultBooks.getContent());
-        return "/search/index";
+                                           SearchWordDto searchWordDto, Model model) throws EmptySearchException {
+        if(searchWordDto != null) {
+            Page<Book> pageOfSearchResultBooks = bookService.getPageOfSearchResultBooks(searchWordDto.getExample(), 0, 10);
+            model.addAttribute("searchWordDto", searchWordDto);
+            model.addAttribute("searchResultSize", pageOfSearchResultBooks.getTotalElements());
+            model.addAttribute("searchResults", pageOfSearchResultBooks.getContent());
+            return "/search/index";
+        } else {
+            throw new EmptySearchException("Поиск по null невозможен");
+        }
+
     }
 
     @GetMapping("search/page/{searchWord}")

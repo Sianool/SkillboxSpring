@@ -2,9 +2,14 @@ package com.example.MyBookShopApp.struct.book;
 
 
 import com.example.MyBookShopApp.struct.Author;
+import com.example.MyBookShopApp.struct.book.file.BookFileEntity;
+import com.example.MyBookShopApp.struct.book.links.Book2TagEntity;
 import com.example.MyBookShopApp.struct.book.links.Book2UserEntity;
+import com.example.MyBookShopApp.struct.book.review.BookRatingEntity;
+import com.example.MyBookShopApp.struct.book.review.BookReviewEntity;
 import com.example.MyBookShopApp.struct.genre.GenreEntity;
 import com.example.MyBookShopApp.struct.genre.TagEntity;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -13,6 +18,7 @@ import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -58,10 +64,20 @@ public class Book {
     @JsonIgnore
     private List<Book2UserEntity> book2User;
 
+    @OneToMany(mappedBy = "book")
+    @ApiModelProperty("book files")
+    @JsonIgnore
+    private List<BookFileEntity> bookFileEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "book")
+    @ApiModelProperty("book rating entities")
+    @JsonIgnore
+    private List<BookRatingEntity> bookRatingEntities;
+
     @Column(name = "is_bestseller")
     @ApiModelProperty("if isBestseller = 1 so the book is considered to be bestseller and if 0 " +
             "the book is not a bestseller")
-    private Integer isBestSeller;
+    private Integer isBestseller;
 
     @ApiModelProperty("mnemonical identity sequence of characters")
     private String slug;
@@ -84,10 +100,14 @@ public class Book {
     @ApiModelProperty("discount value for book")
     private Double discount;
 
-    @Formula("(select count(bu.id) from book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='PAID') + " +
-            "((select count(bu.id) from book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='CART') * 0.7) +" +
-            "((select count(bu.id) from book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='KEPT') * 0.4)")
+    @Formula("(SELECT count(bu.id) FROM book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='PAID') + " +
+            "((SELECT count(bu.id) FROM book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='CART') * 0.7) +" +
+            "((SELECT count(bu.id) FROM book2user bu join book2user_type but on bu.type_id=but.id WHERE bu.book_id = id AND but.code='KEPT') * 0.4)")
     private Double bookPopularity;
+
+    @Formula("(COALESCE((SELECT ROUND(avg(br.rating)) FROM book_rating br WHERE br.book_id = id), 0))")
+    @JsonProperty("rating")
+    private Integer bookRating;
     
     public Integer getId() {
         return id;
@@ -113,12 +133,12 @@ public class Book {
         this.author = author;
     }
 
-    public Integer getIsBestSeller() {
-        return isBestSeller;
+    public Integer getIsBestseller() {
+        return isBestseller;
     }
 
-    public void setIsBestSeller(Integer isBestSeller) {
-        this.isBestSeller = isBestSeller;
+    public void setIsBestseller(Integer isBestSeller) {
+        this.isBestseller = isBestSeller;
     }
 
     public String getSlug() {
@@ -185,6 +205,14 @@ public class Book {
         this.tags = tags;
     }
 
+    public Integer getBookRating() {
+        return bookRating;
+    }
+
+    public void setBookRating(Integer bookRating) {
+        this.bookRating = bookRating;
+    }
+
     public List<Book2UserEntity> getBook2User() {
         return book2User;
     }
@@ -201,6 +229,30 @@ public class Book {
         this.bookPopularity = bookPopularity;
     }
 
+    public List<BookFileEntity> getBookFileEntities() {
+        return bookFileEntities;
+    }
+
+    public void setBookFileEntities(List<BookFileEntity> bookFileEntities) {
+        this.bookFileEntities = bookFileEntities;
+    }
+
+    public List<BookRatingEntity> getBookRatingEntities() {
+        return bookRatingEntities;
+    }
+
+    public void setBookRatingEntities(List<BookRatingEntity> bookRatingEntities) {
+        this.bookRatingEntities = bookRatingEntities;
+    }
+
+    public Integer getRatingCount(Integer rating) {
+        int result = 0;
+        for (BookRatingEntity ratingEntity : getBookRatingEntities()) {
+            if (ratingEntity.getRating() == rating) result++;
+        }
+        return result;
+    }
+
     @JsonProperty("discountPrice")
     public Integer getDiscountedPrice() {
         return Math.toIntExact(Math.round(priceOld - priceOld * discount));
@@ -211,25 +263,19 @@ public class Book {
         return (int)(discount * 100);
     }
 
-/*    @JsonProperty("bookRank")
-    public Double getBookRank() {
-        double result = 0;
-        for (Book2UserEntity entity : book2User) {
-            String code = entity.getBook2UserTypeEntity().getCode();
-            switch (code) {
-                case "PAID":
-                    result++;
-                    break;
-                case "CART":
-                    result += 0.7;
-                    break;
-                case "KEPT":
-                    result += 0.4;
-                    break;
-            }
+    @JsonGetter("authors")
+    public String authorFullName() {
+        return author.toString();
+    }
+
+    @JsonIgnore
+    public List<BookReviewEntity> getReviewList() {
+        List<BookReviewEntity> list = new ArrayList<>();
+        for (BookRatingEntity ratingEntity : getBookRatingEntities()) {
+            if (ratingEntity.getBookReviewEntity() != null) list.add(ratingEntity.getBookReviewEntity());
         }
-        return result;
-    }*/
+        return list;
+    }
 
     @Override
     public String toString() {
@@ -237,7 +283,7 @@ public class Book {
                 "id=" + id +
                 ", pubDate=" + pubDate +
                 ", author=" + author +
-                ", isBestSeller=" + isBestSeller +
+                ", isBestSeller=" + isBestseller +
                 ", slug='" + slug + '\'' +
                 ", title='" + title + '\'' +
                 ", image='" + image + '\'' +

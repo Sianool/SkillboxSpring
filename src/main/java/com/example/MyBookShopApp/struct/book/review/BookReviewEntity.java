@@ -1,7 +1,13 @@
 package com.example.MyBookShopApp.struct.book.review;
 
+import com.example.MyBookShopApp.struct.book.Book;
+import com.example.MyBookShopApp.struct.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @Table(name = "book_review")
@@ -11,17 +17,19 @@ public class BookReviewEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int bookId;
+    @OneToOne
+    @JoinColumn(name = "rating_id",referencedColumnName = "id")
+    private BookRatingEntity bookRatingEntity;
 
-    @Column(columnDefinition = "INT NOT NULL")
-    private int userId;
-
-    @Column(columnDefinition = "DATE NOT NULL")
+    @Column(columnDefinition = "TIMESTAMP NOT NULL")
     private LocalDateTime time;
 
     @Column(columnDefinition = "TEXT NOT NULL")
     private String text;
+
+    @OneToMany(mappedBy = "bookReviewEntity")
+    @JsonIgnore
+    private List<BookReviewLikeEntity> bookReviewLikeEntities;
 
     public int getId() {
         return id;
@@ -31,21 +39,6 @@ public class BookReviewEntity {
         this.id = id;
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
     public LocalDateTime getTime() {
         return time;
@@ -61,5 +54,41 @@ public class BookReviewEntity {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public BookRatingEntity getBookRatingEntity() {
+        return bookRatingEntity;
+    }
+
+    public void setBookRatingEntity(BookRatingEntity bookRatingEntity) {
+        this.bookRatingEntity = bookRatingEntity;
+    }
+
+    public String getStringTime() {
+        return getTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public List<BookReviewLikeEntity> getBookReviewLikeEntities() {
+        return bookReviewLikeEntities;
+    }
+
+    public void setBookReviewLikeEntities(List<BookReviewLikeEntity> bookReviewLikeEntities) {
+        this.bookReviewLikeEntities = bookReviewLikeEntities;
+    }
+
+    public Integer getLikesCount() {
+        int result = 0;
+        for (BookReviewLikeEntity like : getBookReviewLikeEntities()) {
+            if (like.getValue() == 1) result++;
+        }
+        return result;
+    }
+
+    public Integer getDislikesCount() {
+        int result = 0;
+        for (BookReviewLikeEntity like : getBookReviewLikeEntities()) {
+            if (like.getValue() == -1) result++;
+        }
+        return result;
     }
 }
